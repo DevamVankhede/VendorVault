@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body th:fragment="navbar">
+    <header class="app-navbar glass-header">
+        <div class="nav-left">
+            <h2 style="margin: 0; font-size: 1.25rem; font-weight: 600;" th:text="${pageTitle != null ? pageTitle : 'Dashboard'}">Dashboard</h2>
+        </div>
+        <div class="nav-right" style="display: flex; align-items: center; gap: 1.5rem;">
+            <!-- Search -->
+            <div style="position: relative;">
+                <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                <input type="text" class="form-control" placeholder="Search anywhere..." style="padding-left: 2.25rem; width: 250px; border-radius: 20px; background: rgba(0,0,0,0.2);">
+            </div>
+            
+            <!-- Notifications Dropdown -->
+            <a href="/notifications" style="color: var(--text-muted); text-decoration: none; position: relative; transition: var(--transition);">
+                <i class="fas fa-bell" style="font-size: 1.25rem;"></i>
+                <span th:if="${unreadCount != null and unreadCount > 0}" th:text="${unreadCount}" style="position: absolute; top: -5px; right: -8px; background: var(--danger); color: white; font-size: 0.65rem; padding: 2px 5px; border-radius: 10px; font-weight: bold;">3</span>
+            </a>
+            
+            <!-- Quick Add -->
+            <a href="/contracts/create" class="btn btn-primary" style="padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem;">
+                <i class="fas fa-plus"></i> New Contract
+            </a>
+        </div>
+    </header>
+</body>
+</html>

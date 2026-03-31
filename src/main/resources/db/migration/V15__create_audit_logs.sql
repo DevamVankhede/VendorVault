@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS audit_logs (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  entity_type VARCHAR(64) NOT NULL,
+  entity_id BIGINT NULL,
+  event_type VARCHAR(80) NOT NULL,
+  message VARCHAR(1000) NULL,
+  performed_by BIGINT NULL,
+  ip_address VARCHAR(64) NULL,
+  user_agent VARCHAR(255) NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_audit_performed_by FOREIGN KEY (performed_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB;
+

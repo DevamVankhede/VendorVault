@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - VendorVault CLM</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body style="min-height: 100vh; overflow: hidden;">
+    <div class="auth-wrapper">
+        <div class="glass-panel auth-card fade-in">
+            <div class="auth-header">
+                <i class="fas fa-shield-alt"></i>
+                <h2>VendorVault</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Enterprise Contract Lifecycle Management</p>
+            </div>
+            
+            <div th:if="${param.error}" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #F87171; padding: 0.75rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.85rem; text-align: center;">
+                <i class="fas fa-exclamation-triangle"></i> Invalid email or password.
+            </div>
+            
+            <div th:if="${param.logout}" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #34D399; padding: 0.75rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.85rem; text-align: center;">
+                <i class="fas fa-check-circle"></i> You have been successfully signed out.
+            </div>
+
+            <form th:action="@{/authenticate}" method="post">
+                <div class="form-group">
+                    <label class="form-label" for="username">Corporate Email</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-envelope" style="position: absolute; left: 14px; top: 15px; color: var(--text-muted);"></i>
+                        <input type="email" id="username" name="username" class="form-control" style="padding-left: 2.5rem;" required autofocus placeholder="user@orion.com">
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <label class="form-label" for="password" style="margin-bottom: 0;">Password</label>
+                        <a href="#" style="font-size: 0.8rem; color: var(--primary); text-decoration: none;">Forgot password?</a>
+                    </div>
+                    <div style="position: relative;">
+                        <i class="fas fa-lock" style="position: absolute; left: 14px; top: 15px; color: var(--text-muted);"></i>
+                        <input type="password" id="password" name="password" class="form-control" style="padding-left: 2.5rem;" required placeholder="••••••••">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.875rem; font-size: 1rem; border-radius: var(--radius-md);">
+                    <i class="fas fa-sign-in-alt"></i> Sign In to Portal
+                </button>
+            </form>
+            
+            <div style="margin-top: 2rem; text-align: center; color: var(--text-muted); font-size: 0.8rem;">
+                <p>Protected by Spring Security &bull; VendorVault v1.0</p>
+                <p style="margin-top: 0.25rem;">Only authorized personnel.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

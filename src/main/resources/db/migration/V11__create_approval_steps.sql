@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS approval_steps (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  workflow_id BIGINT NOT NULL,
+  step_order INT NOT NULL,
+  role_required VARCHAR(64) NOT NULL,
+  assigned_to_user_id BIGINT NULL,
+  action VARCHAR(32) NOT NULL DEFAULT 'PENDING',
+  action_by BIGINT NULL,
+  action_at TIMESTAMP NULL,
+  comments VARCHAR(1000) NULL,
+  due_at TIMESTAMP NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_steps_workflow FOREIGN KEY (workflow_id) REFERENCES approval_workflows(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_steps_assigned_to FOREIGN KEY (assigned_to_user_id) REFERENCES users(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_steps_action_by FOREIGN KEY (action_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB;
+

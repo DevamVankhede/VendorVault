@@ -1,0 +1,12 @@
+# Railway ignore file
+.git/
+.idea/
+.vscode/
+*.log
+*.txt
+target/
+.env
+.env.local
+apache-maven-3.9.6/
+maven.zip
+node_modules/

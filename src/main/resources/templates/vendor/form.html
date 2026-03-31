@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Create Vendor</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title"><i class="fas fa-plus-circle" style="color: var(--primary);"></i> Register New Vendor</h1>
+                <p class="page-subtitle">Input organizational details to initiate onboarding.</p>
+            </div>
+            <a th:href="@{/vendors}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Directory</a>
+        </div>
+
+        <div class="glass-panel" style="max-width: 800px; padding: 2.5rem;">
+            <form th:action="@{/vendors/create}" th:object="${vendorDTO}" method="post">
+                <div th:if="${#fields.hasErrors('*')}" class="form-group" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #F87171; padding: 1rem; border-radius: var(--radius-sm);">
+                    <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i> Please correct the highlighted errors.
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                    
+                    <!-- Basic Information -->
+                    <div style="grid-column: span 2;">
+                        <h4 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1.5rem;">Company Details</h4>
+                    </div>
+
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label class="form-label" for="name">Registrant Legal Name <span style="color:red;">*</span></label>
+                        <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="E.g., Acme Corporation Ltd." required>
+                        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: var(--danger); font-size: 0.8rem; margin-top: 0.5rem; display: block;"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="vendorType">Entity Type <span style="color:red;">*</span></label>
+                        <select id="vendorType" th:field="*{vendorType}" class="form-control" required>
+                            <option value="">Select Structure</option>
+                            <option value="LLC">Limited Liability (LLC)</option>
+                            <option value="INC">Incorporated (Inc)</option>
+                            <option value="PVT">Private Limited (Pvt. Ltd)</option>
+                            <option value="IND">Sole Proprietorship</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="category">Business Category <span style="color:red;">*</span></label>
+                        <input type="text" id="category" th:field="*{category}" class="form-control" placeholder="E.g., Software Consulting" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="pan">Tax ID / PAN <span style="color:red;">*</span></label>
+                        <input type="text" id="pan" th:field="*{pan}" class="form-control" placeholder="Alphanumeric code" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="gstin">VAT / GSTIN</label>
+                        <input type="text" id="gstin" th:field="*{gstin}" class="form-control" placeholder="Optional identifier">
+                    </div>
+
+                    <!-- Contact Person -->
+                    <div style="grid-column: span 2;">
+                        <h4 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1.5rem; margin-top: 1rem;">Primary Contact</h4>
+                    </div>
+
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label class="form-label" for="contactName">Name <span style="color:red;">*</span></label>
+                        <input type="text" id="contactName" th:field="*{contactName}" class="form-control" placeholder="Full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="contactEmail">Email Address <span style="color:red;">*</span></label>
+                        <input type="email" id="contactEmail" th:field="*{contactEmail}" class="form-control" placeholder="work@acme.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="contactPhone">Phone Number</label>
+                        <input type="tel" id="contactPhone" th:field="*{contactPhone}" class="form-control" placeholder="+x xxx xxxx">
+                    </div>
+
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label class="form-label" for="address">Registered Address</label>
+                        <textarea id="address" th:field="*{address}" class="form-control" rows="3" placeholder="HQ Address..."></textarea>
+                    </div>
+
+                </div>
+
+                <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
+                    <button type="reset" class="btn btn-secondary">Clear</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Submit Registration</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

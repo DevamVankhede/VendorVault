@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS notifications (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id BIGINT NOT NULL,
+  type VARCHAR(64) NOT NULL,
+  title VARCHAR(255) NULL,
+  message VARCHAR(1000) NOT NULL,
+  is_read BOOLEAN NOT NULL DEFAULT FALSE,
+  related_entity_type VARCHAR(64) NULL,
+  related_entity_id BIGINT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  read_at TIMESTAMP NULL,
+  email_dispatched BOOLEAN NOT NULL DEFAULT FALSE,
+  email_failed_reason VARCHAR(500) NULL,
+  CONSTRAINT fk_notifications_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB;
+

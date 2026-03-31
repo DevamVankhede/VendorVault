@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Vendor Directory</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Vendor Directory</h1>
+                <p class="page-subtitle">Manage supplier profiles, compliance, and documents.</p>
+            </div>
+            <a th:href="@{/vendors/create}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Vendor</a>
+        </div>
+
+        <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+            <form th:action="@{/vendors}" method="get" style="display: flex; gap: 1rem; align-items: flex-end;">
+                <div style="flex-grow: 1;">
+                    <label class="form-label">Search</label>
+                    <input type="text" name="search" th:value="${search}" class="form-control" placeholder="Search by name, code or PAN...">
+                </div>
+                <div style="width: 200px;">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-control" style="appearance: none;">
+                        <option value="">All Statuses</option>
+                        <option value="ACTIVE" th:selected="${status == 'ACTIVE'}">Active</option>
+                        <option value="UNDER_REVIEW" th:selected="${status == 'UNDER_REVIEW'}">Under Review</option>
+                        <option value="BLACKLISTED" th:selected="${status == 'BLACKLISTED'}">Blacklisted</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i> Filter</button>
+                    <a th:href="@{/vendors}" class="btn btn-secondary">Clear</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="glass-panel" style="overflow: hidden;">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Vendor Name</th>
+                            <th>Category</th>
+                            <th>PAN/GSTIN</th>
+                            <th>Status</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${vendorPage.empty}">
+                            <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                                <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5; display: block;"></i>
+                                No vendors found matching your criteria.
+                            </td>
+                        </tr>
+                        <tr th:each="vendor : ${vendorPage.content}">
+                            <td style="font-family: monospace; color: var(--info); font-weight: bold;" th:text="${vendor.vendorCode}">VND-001</td>
+                            <td>
+                                <div style="font-weight: 600; color: white;" th:text="${vendor.name}">Acme Corp</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);" th:text="${vendor.contactEmail}">contact@acme.com</div>
+                            </td>
+                            <td th:text="${vendor.category}">IT Services</td>
+                            <td>
+                                <div th:text="${vendor.pan}">ABCDE1234F</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);" th:text="${vendor.gstin != null ? vendor.gstin : '-'}">GST...</div>
+                            </td>
+                            <td>
+                                <span th:class="'badge badge-' + (${vendor.status.name() == 'ACTIVE'} ? 'success' : (${vendor.status.name() == 'BLACKLISTED'} ? 'danger' : 'warning'))"
+                                      th:text="${vendor.status}">Status</span>
+                            </td>
+                            <td style="text-align: right;">
+                                <a th:href="@{/vendors/{id}(id=${vendor.id})}" class="btn btn-secondary" style="padding: 0.4rem 0.75rem; font-size: 0.8rem;">
+                                    <i class="fas fa-eye" style="margin:0;"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination Controls -->
+            <div th:if="${vendorPage.totalPages > 1}" style="padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 0.85rem; color: var(--text-muted);">
+                    Showing <span th:text="${vendorPage.number * vendorPage.size + 1}"></span> to <span th:text="${Math.min((vendorPage.number + 1) * vendorPage.size, vendorPage.totalElements)}"></span> of <span th:text="${vendorPage.totalElements}"></span> entries
+                </div>
+                <div style="display: flex; gap: 0.25rem;">
+                    <a th:each="i : ${pageNumbers}" th:href="@{/vendors(page=${i}, search=${search}, status=${status})}" 
+                       class="btn" th:classappend="${vendorPage.number + 1 == i} ? 'btn-primary' : 'btn-secondary'"
+                       style="padding: 0.4rem 0.75rem; min-width: 35px; text-align: center;" th:text="${i}"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

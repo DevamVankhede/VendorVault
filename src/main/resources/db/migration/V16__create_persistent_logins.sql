@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS persistent_logins (
+  series VARCHAR(64) NOT NULL PRIMARY KEY,
+  username VARCHAR(190) NOT NULL,
+  token VARCHAR(64) NOT NULL,
+  last_used TIMESTAMP NOT NULL
+) ENGINE=InnoDB;
+

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Approvals Inbox</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Approval Inbox</h1>
+                <p class="page-subtitle">Tasks and contracts awaiting your review and authorize actions.</p>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(pendingSteps)}" class="glass-panel" style="padding: 4rem; text-align: center; color: var(--text-muted);">
+            <i class="fas fa-check-double" style="font-size: 4rem; margin-bottom: 1.5rem; opacity: 0.3;"></i>
+            <h3>You're all caught up!</h3>
+            <p>No pending approvals assigned to you right now.</p>
+        </div>
+
+        <div th:if="${not #lists.isEmpty(pendingSteps)}">
+            <div th:each="step : ${pendingSteps}" class="glass-panel" style="margin-bottom: 1.5rem; border-left: 4px solid var(--warning);">
+                <div style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: flex-start;">
+                    
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                            <span class="badge badge-warning">Awaiting Your Action</span>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">Assigned on <span th:text="${#temporals.format(step.createdAt, 'dd MMM yyyy, HH:mm')}">Time</span></span>
+                        </div>
+                        <h3 style="margin-bottom: 0;">Contract Review</h3>
+                        <div style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.95rem;">
+                            Step <span th:text="${step.stepOrder}">1</span> - Please review compliance requirements.
+                        </div>
+                        
+                        <div style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Entity Linked</div>
+                                    <div style="font-weight: 500;" th:text="'Contract #' + ${step.workflow.contract.contractNumber}">CNT-001</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Workflow Status</div>
+                                    <div style="font-weight: 500;" th:text="${step.workflow.status}">IN_PROGRESS</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="width: 350px;">
+                        <h4 style="font-size: 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Provide Decision</h4>
+                        <form th:action="@{/approvals/{id}/approve(id=${step.id})}" method="post" style="margin-bottom: 0.5rem; display: flex; gap: 0.5rem;">
+                            <input type="text" name="comments" placeholder="Add optional comments..." class="form-control" style="font-size: 0.85rem; padding: 0.5rem;">
+                            <button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);"><i class="fas fa-check"></i> Approve</button>
+                        </form>
+                        <form th:action="@{/approvals/{id}/reject(id=${step.id})}" method="post" style="display: flex; gap: 0.5rem;">
+                            <input type="text" name="comments" placeholder="Rejection reason (Required)" required class="form-control" style="font-size: 0.85rem; padding: 0.5rem;">
+                            <button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);"><i class="fas fa-times"></i> Reject</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
