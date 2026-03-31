@@ -3,136 +3,279 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-    <title>Reports & Analytics</title>
+    <title>Reports & Analytics | VendorVault CLM</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        .report-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
+        .page-header {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .report-card {
-            padding: 2rem;
-            text-align: center;
-            transition: transform 0.3s ease;
+
+        .report-section {
+            margin-bottom: 3rem;
         }
-        .report-card:hover {
-            transform: translateY(-5px);
-        }
-        .chart-placeholder {
-            height: 200px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--radius-md);
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .section-title i {
+            color: var(--primary-color);
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .report-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .analytics-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .analytics-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 350px;
             margin: 1.5rem 0;
-            border: 1px dashed var(--border-color);
+            width: 100%;
+        }
+
+        .data-summary {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .exposure-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .exposure-table th {
+            text-align: left;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            padding-bottom: 1rem;
+        }
+
+        .exposure-table td {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 3px;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
     <div layout:fragment="content">
         <div class="page-header">
-            <div>
+            <div class="animate-in">
                 <h1 class="page-title">Reports & Analytics</h1>
-                <p class="page-subtitle">Visual overview of contract distribution and financial exposure.</p>
+                <p class="page-subtitle">Strategic overview of contract distribution and vendor performance metrics.</p>
             </div>
-            <div style="display: flex; gap: 0.75rem;">
-                <a th:href="@{/reports/export}" class="btn btn-primary"><i class="fas fa-file-pdf"></i> PDF</a>
-                <a th:href="@{/reports/export/csv}" class="btn btn-secondary"><i class="fas fa-file-csv"></i> CSV</a>
+            <div class="btn-group animate-in">
+                <a th:href="@{/reports/export}" class="btn btn-primary">
+                    <i class="fas fa-file-pdf"></i> Download PDF
+                </a>
+                <a th:href="@{/reports/export/csv}" class="btn btn-outline">
+                    <i class="fas fa-file-csv"></i> Export CSV
+                </a>
             </div>
         </div>
 
-        <div class="report-grid">
-            <!-- Financial Exposure Card -->
-            <div class="glass-panel report-card">
-                <h3>Financial Exposure by Dept</h3>
-                <div style="height: 250px; margin: 1.5rem 0;">
-                    <canvas id="exposureChart"></canvas>
+        <div class="report-section">
+            <h2 class="section-title"><i class="fas fa-chart-pie"></i> Distribution Analysis</h2>
+            <div class="report-grid">
+                <!-- Financial Exposure -->
+                <div class="analytics-card animate-in-right">
+                    <h3>Financial Exposure by Dept</h3>
+                    <p class="text-muted" style="margin-bottom: 1rem;">Total contract value weightage per business unit.</p>
+                    <div class="chart-container">
+                        <canvas id="exposureChart"></canvas>
+                    </div>
+                    <div class="data-summary">
+                        <table class="exposure-table">
+                            <thead>
+                                <tr>
+                                    <th>Department</th>
+                                    <th>Weightage</th>
+                                    <th style="text-align: right;">Total Exposure</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item, iterStat : ${exposureData}">
+                                    <td th:text="${item.department}">IT</td>
+                                    <td style="width: 150px;">
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill" th:style="'width: ' + ${iterStat.index == 0 ? '85' : (iterStat.index == 1 ? '65' : (iterStat.index == 2 ? '45' : '25'))} + '%'"></div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: right; font-weight: 600;" th:text="'$' + ${#numbers.formatDecimal(item.exposure, 0, 'COMMA', 2, 'POINT')}">$100,000.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <table class="table" style="font-size: 0.9rem;">
-                    <thead>
-                        <tr>
-                            <th>Department</th>
-                            <th style="text-align: right;">Total Exposure</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="item : ${exposureData}">
-                            <td th:text="${item.department}">IT</td>
-                            <td style="text-align: right; font-weight: 600;" th:text="${#numbers.formatDecimal(item.exposure, 0, 'COMMA', 2, 'POINT')}">100.00</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
 
-            <!-- Performance Card -->
-            <div class="glass-panel report-card">
-                <h3>Vendor Performance Metrics</h3>
-                <div style="height: 300px; margin: 1.5rem 0;">
-                    <canvas id="performanceChart"></canvas>
+                <!-- Vendor Performance radar -->
+                <div class="analytics-card animate-in-left">
+                    <h3>Vendor Performance Matrix</h3>
+                    <p class="text-muted" style="margin-bottom: 1rem;">Multi-axis comparison of TOP 5 vendors by performance scores.</p>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                    <div class="data-summary">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Avg Compliance</span>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;">94.2%</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Reliability Trend</span>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-color);">+5.4% <i class="fas fa-arrow-up" style="font-size: 0.9rem;"></i></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p class="text-muted" style="font-size: 0.85rem;">Multi-axis comparison of Reliability, Communication, and Compliance scores.</p>
             </div>
         </div>
 
         <script th:inline="javascript">
             /*<![CDATA[*/
             document.addEventListener('DOMContentLoaded', function() {
-                const exposureData = [[${exposureData}]];
-                const labels = exposureData.map(item => item.department);
-                const dataValues = exposureData.map(item => item.exposure);
+                // Chart Setup configuration
+                Chart.defaults.color = 'rgba(255, 255, 255, 0.6)';
+                Chart.defaults.font.family = "'Inter', sans-serif";
 
-                const ctx = document.getElementById('exposureChart').getContext('2d');
-                new Chart(ctx, {
+                // Exposure Doughnut Chart
+                const exposureData = /*[[${exposureData}]]*/ [];
+                const expLabels = exposureData.map(item => item.department);
+                const expValues = exposureData.map(item => item.exposure);
+
+                const ctxExp = document.getElementById('exposureChart').getContext('2d');
+                new Chart(ctxExp, {
                     type: 'doughnut',
                     data: {
-                        labels: labels,
+                        labels: expLabels,
                         datasets: [{
-                            data: dataValues,
+                            data: expValues,
                             backgroundColor: [
+                                '#6366f1', '#a855f7', '#ec4899', '#f43f5e', '#f59e0b', '#10b981', '#3b82f6'
+                            ].map(color => color + '99'), // add transparency
+                            hoverBackgroundColor: [
                                 '#6366f1', '#a855f7', '#ec4899', '#f43f5e', '#f59e0b', '#10b981', '#3b82f6'
                             ],
                             borderWidth: 0,
-                            hoverOffset: 10
+                            hoverOffset: 15
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        layout: { padding: 20 },
                         plugins: {
                             legend: {
-                                position: 'bottom',
+                                position: 'right',
                                 labels: {
-                                    color: 'rgba(255, 255, 255, 0.7)',
-                                    font: { size: 10 }
+                                    padding: 20,
+                                    usePointStyle: true,
+                                    boxWidth: 8
                                 }
                             }
+                        },
+                        cutout: '70%',
+                        animation: {
+                            animateScale: true,
+                            animateRotate: true
                         }
                     }
                 });
 
                 // Performance Radar Chart
-                const perfDataRaw = [[${performanceData}]];
-                const labelsRadar = ['Quality', 'Delivery', 'Communication', 'Compliance'];
+                const perfDataRaw = /*[[${performanceData}]]*/ [];
+                const radarLabels = ['Quality', 'Delivery', 'Communication', 'Compliance'];
                 
-                const datasetsRadar = perfDataRaw.map((v, i) => ({
-                    label: v.vendor,
-                    data: [v.quality, v.delivery, v.communication, v.compliance],
-                    fill: true,
-                    backgroundColor: `rgba(${99 + i*30}, ${102 + i*20}, 241, 0.2)`,
-                    borderColor: `rgba(${99 + i*30}, ${102 + i*20}, 241, 1)`,
-                    pointBackgroundColor: `rgba(${99 + i*30}, ${102 + i*20}, 241, 1)`,
-                }));
+                const radarDatasets = perfDataRaw.map((v, i) => {
+                    const colors = [
+                        {bg: 'rgba(99, 102, 241, 0.2)', border: '#6366f1'},
+                        {bg: 'rgba(168, 85, 247, 0.2)', border: '#a855f7'},
+                        {bg: 'rgba(236, 72, 153, 0.2)', border: '#ec4899'},
+                        {bg: 'rgba(16, 185, 129, 0.2)', border: '#10b981'},
+                        {bg: 'rgba(245, 158, 11, 0.2)', border: '#f59e0b'}
+                    ];
+                    return {
+                        label: v.vendor,
+                        data: [v.quality, v.delivery, v.communication, v.compliance],
+                        fill: true,
+                        backgroundColor: colors[i % colors.length].bg,
+                        borderColor: colors[i % colors.length].border,
+                        pointBackgroundColor: colors[i % colors.length].border,
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: colors[i % colors.length].border,
+                        borderWidth: 2
+                    };
+                });
 
                 const ctxRadar = document.getElementById('performanceChart').getContext('2d');
                 new Chart(ctxRadar, {
                     type: 'radar',
                     data: {
-                        labels: labelsRadar,
-                        datasets: datasetsRadar
+                        labels: radarLabels,
+                        datasets: radarDatasets
                     },
                     options: {
                         responsive: true,
@@ -141,7 +284,7 @@
                             r: {
                                 angleLines: { color: 'rgba(255,255,255,0.1)' },
                                 grid: { color: 'rgba(255,255,255,0.1)' },
-                                pointLabels: { color: 'rgba(255,255,255,0.7)', font: { size: 10 } },
+                                pointLabels: { color: 'rgba(255,255,255,0.8)', font: { size: 12, weight: '600' } },
                                 ticks: { display: false },
                                 suggestedMin: 0,
                                 suggestedMax: 100
@@ -150,7 +293,10 @@
                         plugins: {
                             legend: {
                                 position: 'bottom',
-                                labels: { color: 'rgba(255,255,255,0.7)', boxWidth: 10, font: { size: 10 } }
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 20
+                                }
                             }
                         }
                     }

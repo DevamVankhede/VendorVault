@@ -5,4 +5,4 @@ nixPkgs = ["...", "maven", "jdk17"]
 cmds = ["mvn clean package -DskipTests"]
 
 [phases.start]
-cmd = "java -Dserver.port=$PORT -jar target/vendorvault-clm-1.0.0.jar"
+cmd = "java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar target/vendorvault-clm-1.0.0.jar"
