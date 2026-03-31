@@ -61,19 +61,19 @@ railway up
 1. In your Railway project dashboard, click **"+ New"**
 2. Select **"Database"** → **"Add MySQL"**
 3. Railway will automatically create a MySQL database
-4. Note: Railway will automatically set `DATABASE_URL` environment variable
+4. Railway will automatically set `DATABASE_URL` environment variable
+5. **IMPORTANT**: The app will automatically detect and convert Railway's `DATABASE_URL` format
 
 ### Step 5: Configure Environment Variables
 
-In Railway dashboard, go to your service → **Variables** tab and add:
+In Railway dashboard, go to your **web service** → **Variables** tab and add:
 
 ```bash
-# Database (Railway provides these automatically, but you can override)
-DB_HOST=<from Railway MySQL service>
-DB_PORT=3306
-DB_NAME=railway
-DB_USERNAME=<from Railway MySQL service>
-DB_PASSWORD=<from Railway MySQL service>
+# Spring Profile (REQUIRED)
+SPRING_PROFILES_ACTIVE=prod
+
+# Database - Railway provides DATABASE_URL automatically
+# The app will auto-clway MySQL service>
 
 # Or use the DATABASE_URL that Railway provides
 SPRING_DATASOURCE_URL=${DATABASE_URL}
